@@ -468,7 +468,7 @@ function App() {
                   transition={{ duration: 0.4, ease: "easeOut" }}
                 >
                   <img
-                    src="/nathan-portrait.jpg"
+                    src="/nathan-portrait.webp"
                     alt="Portrait"
                     className="w-full h-full object-cover"
                   />
