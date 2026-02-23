@@ -643,7 +643,7 @@ function App() {
 
           {/* MUR DE PROJETS (MARQUEE) */}
           <section ref={showcaseRef} className="py-12 overflow-hidden relative">
-            <div className="mb-12">
+            <div className="container mx-auto px-6 mb-12">
               <h3 className="text-2xl font-bold text-slate-900">
                 D'autres créations qui marquent les esprits.
               </h3>
@@ -651,19 +651,23 @@ function App() {
                 Cliquez pour visiter les sites en direct.
               </p>
             </div>
-            <div className="flex flex-col gap-6 w-[200vw] -ml-[50vw]">
-              <motion.div style={{ x: xMoveLeft }} className="flex gap-6 px-6">
+
+            <div className="flex flex-col gap-4 sm:gap-6 w-[400vw] sm:w-[200vw] -ml-[150vw] sm:-ml-[50vw]">
+              <motion.div
+                style={{ x: xMoveLeft }}
+                className="flex gap-4 sm:gap-6 px-6"
+              >
                 {[...otherProjects, ...otherProjects].map((proj, idx) => (
                   <a
                     key={idx}
                     href={proj.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`shrink-0 w-80 h-56 sm:w-96 sm:h-64 ${proj.color} rounded-2xl p-3 sm:p-4 hover:scale-105 transition-transform duration-300 shadow-lg`}
+                    className={`shrink-0 w-64 h-40 sm:w-80 sm:h-56 md:w-96 md:h-64 ${proj.color} rounded-2xl p-2 sm:p-4 hover:scale-105 transition-transform duration-300 shadow-lg`}
                   >
                     <div className="w-full h-full bg-white rounded-xl overflow-hidden relative group">
-                      <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center">
-                        <div className="bg-white text-slate-900 font-bold px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity translate-y-4 group-hover:translate-y-0 shadow-lg">
+                      <div className="absolute inset-0 bg-slate-900/0 md:group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center">
+                        <div className="bg-white text-slate-900 font-bold px-3 py-1.5 text-sm sm:text-base sm:px-4 sm:py-2 rounded-full opacity-0 md:group-hover:opacity-100 transition-opacity translate-y-4 group-hover:translate-y-0 shadow-lg">
                           Visiter le site
                         </div>
                       </div>
@@ -676,7 +680,10 @@ function App() {
                   </a>
                 ))}
               </motion.div>
-              <motion.div style={{ x: xMoveRight }} className="flex gap-6 px-6">
+              <motion.div
+                style={{ x: xMoveRight }}
+                className="flex gap-4 sm:gap-6 px-6"
+              >
                 {[...otherProjects]
                   .reverse()
                   .concat([...otherProjects].reverse())
@@ -686,11 +693,11 @@ function App() {
                       href={proj.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`shrink-0 w-80 h-56 sm:w-96 sm:h-64 ${proj.color} rounded-2xl p-3 sm:p-4 hover:scale-105 transition-transform duration-300 shadow-lg`}
+                      className={`shrink-0 w-64 h-40 sm:w-80 sm:h-56 md:w-96 md:h-64 ${proj.color} rounded-2xl p-2 sm:p-4 hover:scale-105 transition-transform duration-300 shadow-lg`}
                     >
                       <div className="w-full h-full bg-white rounded-xl overflow-hidden relative group">
-                        <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center">
-                          <div className="bg-white text-slate-900 font-bold px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity translate-y-4 group-hover:translate-y-0 shadow-lg">
+                        <div className="absolute inset-0 bg-slate-900/0 md:group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center">
+                          <div className="bg-white text-slate-900 font-bold px-3 py-1.5 text-sm sm:text-base sm:px-4 sm:py-2 rounded-full opacity-0 md:group-hover:opacity-100 transition-opacity translate-y-4 group-hover:translate-y-0 shadow-lg">
                             Visiter le site
                           </div>
                         </div>
