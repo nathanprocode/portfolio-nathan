@@ -6,6 +6,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import {
+  Menu,
   ArrowRight,
   Palette,
   Code2,
@@ -146,7 +147,7 @@ const pricingPlans = [
       "Jusqu'à 5 pages (Accueil, À propos, Services...)",
       "Design System complet",
       "Animations avancées (Scroll, Hover)",
-      "Formation à la prise en main (1h)",
+      "Gestion et mises à jour incluses",
       "Support post-lancement (30 jours)",
     ],
     isPopular: true, // Cette option aura le style sombre mis en avant
@@ -264,6 +265,7 @@ const SectionTitle = ({ children }) => (
 // COMPOSANT PRINCIPAL
 // ==========================================
 function App() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // <-- Ajoute cette ligne
   const [selectedProject, setSelectedProject] = useState(null);
   const [activePage, setActivePage] = useState("home");
 
@@ -363,46 +365,79 @@ function App() {
       </AnimatePresence>
 
       {/* --- HEADER --- */}
-      <header className="fixed top-0 z-30 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
+      <header className="fixed top-0 z-40 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
         <div className="container mx-auto flex h-16 items-center justify-between px-6">
-          <div
-            onClick={() => navigateTo("home")}
-            className="font-bold text-[#0b25e9] text-2xl tracking-tighter cursor-pointer transition-transform hover:scale-105"
-            style={{ fontFamily: "'Poppins', sans-serif" }}
-          >
-            NV.
+          <div className="font-bold text-[#0b25e9] text-xl tracking-tighter">
+            NV<span className="text-[#0b25e9]">.</span>
           </div>
+
+          {/* Menu PC */}
           <nav className="hidden md:flex space-x-8 text-sm font-semibold text-slate-600">
-            <button
-              onClick={() => navigateTo("home")}
+            <a href="#about" className="hover:text-[#0b25e9] transition-colors">
+              À propos
+            </a>
+            <a
+              href="#projects"
               className="hover:text-[#0b25e9] transition-colors"
             >
-              Portfolio
-            </button>
-            {/* Nouveau bouton Tarifs ajouté au header ! */}
-            <button
-              onClick={() => navigateTo("pricing")}
+              Projets
+            </a>
+            <a
+              href="#tarifs"
               className="hover:text-[#0b25e9] transition-colors"
             >
               Tarifs
-            </button>
-            <button
-              onClick={() => {
-                navigateTo("home");
-                setTimeout(
-                  () =>
-                    document
-                      .getElementById("contact")
-                      .scrollIntoView({ behavior: "smooth" }),
-                  100
-                );
-              }}
+            </a>
+            <a
+              href="#contact"
               className="hover:text-[#0b25e9] transition-colors"
             >
               Contact
-            </button>
+            </a>
           </nav>
+
+          {/* Bouton Hamburger pour Mobile */}
+          <button
+            className="md:hidden text-slate-900 p-2"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Menu Mobile Déroulant */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-slate-200 shadow-xl py-4 px-6 flex flex-col space-y-4 font-semibold text-slate-600">
+            <a
+              href="#about"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              À propos
+            </a>
+            <a
+              href="#projects"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              Projets
+            </a>
+            <a
+              href="#tarifs"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              Tarifs
+            </a>
+            <a
+              href="#contact"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              Contact
+            </a>
+          </div>
+        )}
       </header>
 
       {/* --- AFFICHAGE CONDITIONNEL DES PAGES --- */}
@@ -819,139 +854,123 @@ function App() {
         </main>
       )}
 
-      {/* 2. PAGE TARIFS (PRICING) */}
-      {activePage === "pricing" && (
-        <main className="container mx-auto px-6 pt-32 pb-24 min-h-screen">
+      {/* --- SECTION TARIFS --- */}
+      <section id="tarifs" className="py-24 relative z-10">
+        {/* C'EST ICI QUE LA MAGIE OPÈRE : On ajoute la boîte qui gère les marges latérales (px-6) */}
+        <div className="container mx-auto px-6">
           <motion.div
             variants={containerVariants}
             initial="hidden"
-            animate="visible"
-            className="text-center mb-16"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
           >
-            <motion.h1
-              variants={itemVariants}
-              className="text-5xl font-extrabold text-slate-900 mb-6"
-            >
-              Forfaits & <span className="text-[#0b25e9]">Tarifs</span>
-            </motion.h1>
+            <SectionTitle>Forfaits & Tarifs</SectionTitle>
+
             <motion.p
               variants={itemVariants}
-              className="text-xl text-slate-600 max-w-2xl mx-auto"
+              className="text-lg text-slate-600 max-w-2xl mb-12 -mt-4"
             >
               Je conçois des solutions adaptées à vos objectifs. Choisissez la
               formule qui correspond à l'étape de votre entreprise.
             </motion.p>
-          </motion.div>
 
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16"
-          >
-            {pricingPlans.map((plan, idx) => (
-              <motion.div
-                key={idx}
-                variants={itemVariants}
-                className={`relative flex flex-col p-8 rounded-[2rem] border ${
-                  plan.isPopular
-                    ? "bg-slate-900 border-slate-800 text-white shadow-2xl shadow-[#0b25e9]/20 scale-105 z-10"
-                    : "bg-white border-slate-200 text-slate-900 shadow-xl"
-                }`}
-              >
-                {plan.isPopular && (
-                  <div className="absolute top-0 right-8 -translate-y-1/2 bg-[#0b25e9] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                    Le plus demandé
-                  </div>
-                )}
-                <h3 className="text-2xl font-bold mb-2">{plan.title}</h3>
-                <div
-                  className={`text-4xl font-extrabold mb-4 ${
-                    plan.isPopular ? "text-white" : "text-[#0b25e9]"
-                  }`}
-                >
-                  {plan.price}
-                </div>
-                <p
-                  className={`mb-8 flex-grow ${
-                    plan.isPopular ? "text-slate-300" : "text-slate-600"
-                  }`}
-                >
-                  {plan.description}
-                </p>
-
-                <ul className="space-y-4 mb-8">
-                  {plan.features.map((feat, fIdx) => (
-                    <li key={fIdx} className="flex items-start">
-                      <CheckCircle2
-                        className={`shrink-0 mr-3 h-5 w-5 ${
-                          plan.isPopular ? "text-[#0b25e9]" : "text-emerald-500"
-                        }`}
-                      />
-                      <span
-                        className={`text-sm ${
-                          plan.isPopular ? "text-slate-200" : "text-slate-700"
-                        }`}
-                      >
-                        {feat}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-
-                <button
-                  onClick={() => {
-                    navigateTo("home");
-                    setTimeout(
-                      () =>
-                        document
-                          .getElementById("contact")
-                          .scrollIntoView({ behavior: "smooth" }),
-                      100
-                    );
-                  }}
-                  className={`w-full py-4 rounded-xl font-bold transition-transform hover:scale-105 ${
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+              {pricingPlans.map((plan, idx) => (
+                <motion.div
+                  key={idx}
+                  variants={itemVariants}
+                  className={`relative flex flex-col p-6 sm:p-8 rounded-[2rem] border ${
                     plan.isPopular
-                      ? "bg-[#0b25e9] text-white hover:shadow-lg hover:shadow-[#0b25e9]/50"
-                      : "bg-slate-100 text-slate-900 hover:bg-slate-200"
+                      ? "bg-slate-900 border-slate-800 text-white shadow-2xl shadow-[#0b25e9]/20 md:scale-105 z-10"
+                      : "bg-white border-slate-200 text-slate-900 shadow-xl"
                   }`}
                 >
-                  Réserver un appel
-                </button>
-              </motion.div>
-            ))}
-          </motion.div>
+                  {plan.isPopular && (
+                    <div className="absolute top-0 right-6 sm:right-8 -translate-y-1/2 bg-[#0b25e9] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                      Le plus demandé
+                    </div>
+                  )}
+                  <h3 className="text-2xl font-bold mb-2">{plan.title}</h3>
+                  <div
+                    className={`text-4xl font-extrabold mb-4 ${
+                      plan.isPopular ? "text-white" : "text-[#0b25e9]"
+                    }`}
+                  >
+                    {plan.price}
+                  </div>
+                  <p
+                    className={`mb-8 flex-grow ${
+                      plan.isPopular ? "text-slate-300" : "text-slate-600"
+                    }`}
+                  >
+                    {plan.description}
+                  </p>
 
-          {/* Section d'infos supp. (Style Luke Netti) */}
-          <motion.div
-            variants={itemVariants}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto"
-          >
-            <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-lg">
-              <h4 className="text-xl font-bold text-slate-900 mb-4">
-                Modalités de paiement
-              </h4>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                Un acompte de 50% est demandé pour valider et démarrer le
-                projet. Les 50% restants seront facturés le jour de la mise en
-                ligne ou de la livraison finale des fichiers. Les paiements se
-                font par virement bancaire.
-              </p>
+                  <ul className="space-y-4 mb-8">
+                    {plan.features.map((feat, fIdx) => (
+                      <li key={fIdx} className="flex items-start">
+                        <span
+                          className={`shrink-0 mr-3 text-xl ${
+                            plan.isPopular
+                              ? "text-[#0b25e9]"
+                              : "text-emerald-500"
+                          }`}
+                        >
+                          ✓
+                        </span>
+                        <span
+                          className={`text-sm ${
+                            plan.isPopular ? "text-slate-200" : "text-slate-700"
+                          }`}
+                        >
+                          {feat}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <a
+                    href="#contact"
+                    className={`w-full py-4 rounded-xl font-bold text-center transition-transform hover:scale-105 ${
+                      plan.isPopular
+                        ? "bg-[#0b25e9] text-white hover:shadow-lg hover:shadow-[#0b25e9]/50"
+                        : "bg-slate-100 text-slate-900 hover:bg-slate-200"
+                    }`}
+                  >
+                    Réserver un appel
+                  </a>
+                </motion.div>
+              ))}
             </div>
-            <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-lg">
-              <h4 className="text-xl font-bold text-slate-900 mb-4">
-                Support & Suivi
-              </h4>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                Votre réussite m'importe ! C'est pourquoi chaque forfait web
-                inclut une garantie de suivi après le lancement. Si vous
-                rencontrez un bug ou avez une question d'utilisation, je suis là
-                pour vous aider.
-              </p>
-            </div>
+
+            {/* Section d'infos supp. */}
+            <motion.div
+              variants={itemVariants}
+              className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            >
+              <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-lg">
+                <h4 className="text-xl font-bold text-slate-900 mb-4">
+                  Modalités de paiement
+                </h4>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  Un acompte de 50% est demandé pour valider et démarrer le
+                  projet. Les 50% restants seront facturés le jour de la mise en
+                  ligne.
+                </p>
+              </div>
+              <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-lg">
+                <h4 className="text-xl font-bold text-slate-900 mb-4">
+                  Support & Suivi
+                </h4>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  Votre réussite m'importe ! Chaque forfait inclut une garantie
+                  de suivi après le lancement pour vous aider.
+                </p>
+              </div>
+            </motion.div>
           </motion.div>
-        </main>
-      )}
+        </div>
+      </section>
 
       {/* 3. PAGES LÉGALES */}
       {["mentions", "cgu", "cookies"].includes(activePage) && (
