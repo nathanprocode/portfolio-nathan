@@ -11,6 +11,8 @@ import {
   useScroll,
   useTransform,
   AnimatePresence,
+  useMotionValue,
+  useSpring,
 } from "framer-motion";
 import {
   Menu,
@@ -35,6 +37,7 @@ import {
   Terminal,
   Framer,
   CheckCircle2,
+  LayoutDasboard,
 } from "lucide-react";
 
 // ==========================================
@@ -49,35 +52,79 @@ const projectsData = [
     category: "UI/UX • Design System • Intégration",
     image: "/quadrare.jpg",
     tools: ["Wordpress", "Elementor", "Adobe XD"],
-    description:
-      "Une refonte complète de l'expérience utilisateur pour une application de gestion de finances personnelles. L'objectif était de simplifier la vue des dépenses tout en gardant un design premium et rassurant.",
+    description: (
+      <>
+        Création d'un site sur-mesure pour un artisan.{" "}
+        <a
+          href="https://www.quadrare-agencement.fr/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#0b25e9] font-bold hover:underline"
+        >
+          Voir le site web
+        </a>
+      </>
+    ),
   },
   {
     id: 2,
     title: "Kfz Gutachter",
-    category: "UX Research • Web App • Intégration",
+    category: "UX Research • Intégration",
     image: "/kfz.jpg",
     tools: ["Figma", "Wordpress", "Elementor"],
-    description:
-      "Création d'un tableau de bord SaaS pour les vendeurs en ligne. Focus particulier sur la visualisation des données complexes et l'accessibilité des actions rapides.",
+    description: (
+      <>
+        Création d'un site pour une entreprise de constat.{" "}
+        <a
+          href="https://kfz-gutachter-nibelungen.de/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#0b25e9] font-bold hover:underline"
+        >
+          Voir le site web
+        </a>
+      </>
+    ),
   },
   {
     id: 3,
     title: "Jennifer Meyer",
-    category: "Web Design • Framer",
+    category: "UI/UX • Design System • Intégration",
     image: "/jennifer.jpg",
     tools: ["Framer", "Wordpress"],
-    description:
-      "Design et intégration d'une landing page à fort taux de conversion pour une nouvelle banque en ligne ciblant la génération Z.",
+    description: (
+      <>
+        Création d'un site sur-mesure pour un énergiticienne.{" "}
+        <a
+          href="https://www.jennifermeyer.fr/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#0b25e9] font-bold hover:underline"
+        >
+          Voir le site web
+        </a>
+      </>
+    ),
   },
   {
     id: 4,
     title: "Batiamo",
-    category: "Mobile App • UI Design",
+    category: "UI/UX • Design System • Intégration",
     image: "/Batiamo.jpg",
     tools: ["Adobe XD", "Elementor", "Wordpress"],
-    description:
-      "Interface mobile connectée à une montre intelligente pour le suivi de la fréquence cardiaque et du sommeil, avec un mode sombre optimisé.",
+    description: (
+      <>
+        Création d'un site sur-mesure pour un maitre d'oeuvre en bâtiment.{" "}
+        <a
+          href="https://batiamo.fr/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#0b25e9] font-bold hover:underline"
+        >
+          Voir le site web
+        </a>
+      </>
+    ),
   },
 ];
 
@@ -267,7 +314,22 @@ const SectionTitle = ({ children }) => (
     <span className="text-[#0b25e9]">/</span> {children}
   </motion.h2>
 );
-
+const favoriteTools = [
+  { id: 1, name: "Figma", designation: "UI/UX & Maquettage", icon: Figma },
+  {
+    id: 2,
+    name: "React JS",
+    designation: "Développement Front-End",
+    icon: Code2,
+  },
+  {
+    id: 3,
+    name: "Framer Motion",
+    designation: "Animations Fluides",
+    icon: MousePointerClick,
+  },
+  { id: 4, name: "Tailwind CSS", designation: "Design System", icon: Layers },
+];
 // ==========================================
 // COMPOSANT PRINCIPAL
 // ==========================================
@@ -459,7 +521,7 @@ function App() {
             animate="visible"
             className="relative min-h-[85vh] flex flex-col-reverse lg:flex-row items-center justify-center gap-12 py-20"
           >
-            <div className="flex-1 space-y-6 text-center lg:text-left z-10">
+            <div className="flex-1 space-y-6 lg:text-left z-10">
               <motion.div
                 variants={itemVariants}
                 className="inline-flex items-center rounded-full border border-[#0b25e9]/20 bg-[#0b25e9]/5 px-3 py-1 text-sm text-[#0b25e9] font-medium"
@@ -593,15 +655,39 @@ function App() {
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     {[
-                      { name: "Figma", icon: Figma },
-                      { name: "WordPress", icon: LayoutTemplate },
-                      { name: "Framer", icon: Framer },
-                      { name: "Coder de zéro", icon: Terminal },
+                      {
+                        name: "Figma",
+                        icon: Figma,
+                        tooltip: "Maquettage & Prototypage UI/UX",
+                      },
+                      {
+                        name: "React & code",
+                        icon: Code2,
+                        tooltip: "Développement Front-End moderne",
+                      },
+                      {
+                        name: "Prototypage",
+                        icon: MousePointerClick,
+                        tooltip: "Création d'expériences interactives",
+                      },
+                      {
+                        name: "Design Systems",
+                        icon: Layers,
+                        tooltip: "Architecture & Cohérence visuelle",
+                      },
                     ].map((tool, index) => (
                       <div
                         key={index}
-                        className="flex items-center space-x-2 rounded-xl bg-slate-50 p-3 border border-slate-100 hover:border-[#0b25e9]/30 hover:bg-[#0b25e9]/5 transition-colors"
+                        className="group relative flex items-center space-x-2 rounded-xl bg-slate-50 p-3 border border-slate-100 hover:border-[#0b25e9]/30 hover:bg-[#0b25e9]/5 transition-colors"
                       >
+                        {/* --- LE TOOLTIP (La bulle cachée) --- */}
+                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 transform translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-out pointer-events-none z-50">
+                          <div className="bg-slate-900 text-white text-xs font-medium py-1.5 px-3 rounded-lg whitespace-nowrap shadow-xl relative">
+                            {tool.tooltip}
+                            {/* La petite pointe de la bulle vers le bas */}
+                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+                          </div>
+                        </div>
                         <tool.icon size={18} className="text-[#0b25e9]" />
                         <span className="font-semibold text-slate-700">
                           {tool.name}
@@ -1206,6 +1292,77 @@ export const FlipWords = ({ words, duration = 2000, className = "" }) => {
         ))}
       </motion.div>
     </AnimatePresence>
+  );
+};
+// --- MOTEUR ANIMATED TOOLTIP (ACETERNITY) ---
+export const AnimatedTooltip = ({ items }) => {
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const springConfig = { stiffness: 100, damping: 5 };
+  const x = useMotionValue(0);
+
+  const rotate = useSpring(
+    useTransform(x, [-100, 100], [-45, 45]),
+    springConfig
+  );
+  const translateX = useSpring(
+    useTransform(x, [-100, 100], [-50, 50]),
+    springConfig
+  );
+
+  const handleMouseMove = (event) => {
+    const halfWidth = event.target.offsetWidth / 2;
+    x.set(event.nativeEvent.offsetX - halfWidth);
+  };
+
+  return (
+    <div className="flex flex-row items-center justify-start w-full pl-4 pt-4">
+      {items.map((item) => (
+        <div
+          className="-mr-4 relative group cursor-pointer"
+          key={item.id}
+          onMouseEnter={() => setHoveredIndex(item.id)}
+          onMouseLeave={() => setHoveredIndex(null)}
+          onMouseMove={handleMouseMove}
+        >
+          <AnimatePresence>
+            {hoveredIndex === item.id && (
+              <motion.div
+                initial={{ opacity: 0, y: 20, scale: 0.6 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  transition: { type: "spring", stiffness: 260, damping: 10 },
+                }}
+                exit={{ opacity: 0, y: 20, scale: 0.6 }}
+                style={{
+                  translateX: translateX,
+                  rotate: rotate,
+                  whiteSpace: "nowrap",
+                }}
+                className="absolute -top-16 -left-1/2 translate-x-1/2 flex text-xs flex-col items-center justify-center rounded-xl bg-slate-900 z-50 shadow-xl px-4 py-2"
+              >
+                <div className="font-bold text-white relative z-30 text-base">
+                  {item.name}
+                </div>
+                <div className="text-slate-300 text-xs">{item.designation}</div>
+                {/* La petite flèche en bas de la bulle */}
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Le cercle avec l'icône */}
+          <div className="relative flex items-center justify-center h-14 w-14 rounded-full border-2 border-white bg-slate-50 hover:bg-[#0b25e9]/5 hover:border-[#0b25e9]/30 transition-colors duration-300 group-hover:scale-105 group-hover:z-30 shadow-sm">
+            <item.icon size={24} className="text-[#0b25e9]" />
+            {/* L'astuce SEO : Invisible à l'écran, mais lu par Google ! */}
+            <span className="sr-only">
+              Outil utilisé : {item.name} pour {item.designation}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 };
 export default App;
