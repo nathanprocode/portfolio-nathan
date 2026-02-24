@@ -171,7 +171,35 @@ const otherProjects = [
     url: "https://stad-termite.com/",
     image: "/stad2.jpg",
     color: "bg-green-400",
-  }, // Note: j'ai ajouté le / devant stad2.jpg pour éviter les bugs
+  },
+  {
+    id: 107,
+    title: "Alliance IG",
+    url: "https://allianceig.fr/",
+    image: "/allianceig.jpg",
+    color: "bg-green-400",
+  },
+  {
+    id: 108,
+    title: "Ter'Ferme",
+    url: "https://www.terferme.fr/",
+    image: "/terferme.jpg",
+    color: "bg-green-400",
+  },
+  {
+    id: 109,
+    title: "Céline Sellerie",
+    url: "https://www.celinesellerie.fr/",
+    image: "/celinesellerie.jpg",
+    color: "bg-green-400",
+  },
+  {
+    id: 110,
+    title: "Château Vignal La Brie",
+    url: "https://www.chateau-vignal-labrie.fr/",
+    image: "/vignal.jpg",
+    color: "bg-green-400",
+  },
 ];
 
 // Plans tarifaires (Page Pricing)
@@ -785,76 +813,22 @@ function App() {
             </motion.div>
           </section>
 
-          {/* MUR DE PROJETS (MARQUEE) */}
-          <section ref={showcaseRef} className="py-12 overflow-hidden relative">
+          {/* NOUVEAU MUR DE PROJETS 3D (MARQUEE) */}
+          <section className="py-24 relative z-10 overflow-hidden bg-slate-50">
             <div className="container mx-auto px-6 mb-12">
-              <h3 className="text-2xl font-bold text-slate-900">
-                <span class="text-[#0b25e9]">/</span> D'autres créations qui
+              <h3 className="text-3xl font-bold text-slate-900">
+                <span className="text-[#0b25e9]">/</span> D'autres créations qui
                 marquent les esprits.
               </h3>
-              <p className="text-slate-500 mt-2">
-                Cliquez pour visiter les sites en direct.
+              <p className="text-slate-500 mt-2 text-lg">
+                Explorez une sélection de mes derniers travaux. Cliquez pour
+                visiter les sites en direct.
               </p>
             </div>
 
-            <div className="flex flex-col gap-4 sm:gap-6 w-[400vw] sm:w-[200vw] -ml-[150vw] sm:-ml-[50vw]">
-              <motion.div
-                style={{ x: xMoveLeft }}
-                className="flex gap-4 sm:gap-6 px-6"
-              >
-                {[...otherProjects, ...otherProjects].map((proj, idx) => (
-                  <a
-                    key={idx}
-                    href={proj.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`shrink-0 w-64 h-40 sm:w-80 sm:h-56 md:w-96 md:h-64 ${proj.color} rounded-2xl p-2 sm:p-4 hover:scale-105 transition-transform duration-300 shadow-lg`}
-                  >
-                    <div className="w-full h-full bg-white rounded-xl overflow-hidden relative group">
-                      <div className="absolute inset-0 bg-slate-900/0 md:group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center">
-                        <div className="bg-white text-slate-900 font-bold px-3 py-1.5 text-sm sm:text-base sm:px-4 sm:py-2 rounded-full opacity-0 md:group-hover:opacity-100 transition-opacity translate-y-4 group-hover:translate-y-0 shadow-lg">
-                          Visiter le site
-                        </div>
-                      </div>
-                      <img
-                        src={proj.image}
-                        alt={proj.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </a>
-                ))}
-              </motion.div>
-              <motion.div
-                style={{ x: xMoveRight }}
-                className="flex gap-4 sm:gap-6 px-6"
-              >
-                {[...otherProjects]
-                  .reverse()
-                  .concat([...otherProjects].reverse())
-                  .map((proj, idx) => (
-                    <a
-                      key={`rev-${idx}`}
-                      href={proj.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`shrink-0 w-64 h-40 sm:w-80 sm:h-56 md:w-96 md:h-64 ${proj.color} rounded-2xl p-2 sm:p-4 hover:scale-105 transition-transform duration-300 shadow-lg`}
-                    >
-                      <div className="w-full h-full bg-white rounded-xl overflow-hidden relative group">
-                        <div className="absolute inset-0 bg-slate-900/0 md:group-hover:bg-slate-900/10 transition-colors z-10 flex items-center justify-center">
-                          <div className="bg-white text-slate-900 font-bold px-3 py-1.5 text-sm sm:text-base sm:px-4 sm:py-2 rounded-full opacity-0 md:group-hover:opacity-100 transition-opacity translate-y-4 group-hover:translate-y-0 shadow-lg">
-                            Visiter le site
-                          </div>
-                        </div>
-                        <img
-                          src={proj.image}
-                          alt={proj.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </a>
-                  ))}
-              </motion.div>
+            {/* L'INTÉGRATION DU MOTEUR 3D ACETERNITY */}
+            <div className="w-full">
+              <ThreeDMarquee items={otherProjects} />
             </div>
           </section>
           {/* --- SECTION TARIFS --- */}
@@ -1362,6 +1336,92 @@ export const AnimatedTooltip = ({ items }) => {
           </div>
         </div>
       ))}
+    </div>
+  );
+};
+// --- MOTEUR 3D MARQUEE (LA VRAIE CORRECTION POUR LES CLICS) ---
+const MarqueeColumn = ({ items, speed, direction, className = "" }) => {
+  return (
+    // On rend les colonnes "fantômes" pour ne pas bloquer la souris
+    <div
+      className={`flex w-64 md:w-72 flex-col gap-6 ${className} pointer-events-none`}
+    >
+      <motion.div
+        animate={{ y: direction === "up" ? ["0%", "-50%"] : ["-50%", "0%"] }}
+        transition={{ repeat: Infinity, ease: "linear", duration: speed }}
+        className="flex flex-col gap-6 pointer-events-none"
+      >
+        {[...items, ...items].map((item, i) => (
+          <a
+            key={i}
+            href={item.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            // LA MAGIE EST ICI : pointer-events-auto rend UNIQUEMENT la carte cliquable !
+            className="group relative h-48 md:h-56 w-full overflow-hidden rounded-3xl border border-slate-200 shadow-xl hover:border-[#0b25e9]/50 transition-all block pointer-events-auto cursor-pointer"
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent z-10 opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+            <div
+              className={`w-full h-full ${item.color} group-hover:scale-110 transition-transform duration-700`}
+            >
+              <img
+                src={item.image}
+                alt={item.title}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.style.display = "none";
+                }}
+              />
+            </div>
+
+            <div className="absolute inset-0 z-20 p-6 flex flex-col justify-end pointer-events-none">
+              <h3 className="text-xl font-bold text-white mb-1 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                {item.title}
+              </h3>
+              <p className="text-sm text-slate-300 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 delay-75 flex items-center">
+                Voir le site <ArrowRight size={14} className="ml-1" />
+              </p>
+            </div>
+          </a>
+        ))}
+      </motion.div>
+    </div>
+  );
+};
+
+export const ThreeDMarquee = ({ items }) => {
+  // 1. On crée des variations de votre liste pour casser la symétrie !
+  const column2Items = [...items].reverse(); // On lit la liste à l'envers
+  const column3Items = [...items.slice(4), ...items.slice(0, 4)]; // On coupe la liste en deux et on inverse les moitiés
+
+  return (
+    <div className="relative flex h-[600px] w-full flex-col items-center justify-center overflow-hidden [perspective:1000px] pointer-events-none">
+      <div
+        className="flex w-full flex-row justify-center gap-6 pointer-events-none"
+        style={{
+          transform: "rotateX(20deg) rotateZ(-20deg) rotateY(20deg)",
+          transformStyle: "preserve-3d",
+        }}
+      >
+        {/* 2. On distribue nos listes mélangées aux 3 colonnes */}
+        <MarqueeColumn items={items} speed={25} direction="up" />
+        <MarqueeColumn
+          items={column2Items}
+          speed={35}
+          direction="down"
+          className="hidden sm:flex"
+        />
+        <MarqueeColumn
+          items={column3Items}
+          speed={30}
+          direction="up"
+          className="hidden lg:flex"
+        />
+      </div>
+
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-slate-50 to-transparent z-30"></div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-50 to-transparent z-30"></div>
     </div>
   );
 };
