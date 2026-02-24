@@ -1,4 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, {
+  useRef,
+  useState,
+  createContext,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
 import {
   motion,
   useScroll,
@@ -450,7 +457,7 @@ function App() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="min-h-[85vh] flex flex-col-reverse lg:flex-row items-center justify-center gap-12 py-20"
+            className="relative min-h-[85vh] flex flex-col-reverse lg:flex-row items-center justify-center gap-12 py-20"
           >
             <div className="flex-1 space-y-6 text-center lg:text-left z-10">
               <motion.div
@@ -467,15 +474,24 @@ function App() {
                 variants={itemVariants}
                 className="text-5xl font-extrabold tracking-tighter text-slate-900 sm:text-7xl lg:leading-[1.1]"
               >
-                Salut, je suis <br className="hidden sm:block" />
+                Créateur{" "}
+                <FlipWords
+                  words={["de sites web", "d'identité visuelle", "de logo"]}
+                />{" "}
+                en Dordogne, <br className="hidden sm:block" />
                 <span className="text-[#0b25e9]">Nathan Vulpiani</span>.
               </motion.h1>
               <motion.h2
                 variants={itemVariants}
                 className="text-2xl sm:text-3xl font-medium text-slate-500"
               >
-                <span className="text-slate-900 font-bold">UI/UX Designer</span>{" "}
-                de 25 ans créant des expériences numériques mémorables.
+                <span className="text-slate-900 font-bold">
+                  UI/UX Designer Freelance,
+                </span>{" "}
+                vous avez besoin d'un site internet ou d'une identité visuelle,
+                mais le monde du digital vous semble compliqué ? Pas de panique.
+                En tant que designer et développeur, je vous accompagne de A à Z
+                pour créer un projet qui vous ressemble, sans jargon technique.
               </motion.h2>
               <motion.div
                 variants={itemVariants}
@@ -490,6 +506,7 @@ function App() {
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </span>
                 </a>
+                {/* LE FILIGRANE GÉANT ANIMÉ (Caché sur mobile) */}
               </motion.div>
             </div>
             <div className="flex-1 relative w-full max-w-lg aspect-square lg:aspect-auto lg:h-[600px]">
@@ -524,13 +541,16 @@ function App() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:grid-rows-[auto_auto]">
                 <BentoCard className="md:col-span-2 flex flex-col justify-center">
                   <h3 className="text-2xl font-bold mb-4 text-[#0b25e9]">
-                    Au carrefour du design et de la technologie.
+                    Qui se cache derrière vos écrans ?
                   </h3>
                   <p className="text-lg text-slate-600">
-                    Je ne me contente pas de rendre les choses jolies. Je
-                    conçois des interfaces intuitives qui résolvent de vrais
-                    problèmes. Mon approche combine une recherche UX rigoureuse
-                    avec une exécution UI au pixel près.
+                    Je suis Nathan Vulpiani. Mon aventure avec le web a commencé
+                    en Dordogne, avec le Sésame Numérique de la WAB à Bergerac,
+                    suivi d'une licence en UI/UX Design en alternance chez
+                    COM'LIBRI. Pour enrichir ma vision du métier, j'ai ensuite
+                    fait mes valises pour Berlin afin de travailler dans une
+                    agence de communication à l'international. De retour chez
+                    moi, près de Belvès, j'ai décidé de me lancer en freelance.
                   </p>
                 </BentoCard>
                 <BentoCard className="md:row-span-2 flex flex-col">
@@ -541,9 +561,12 @@ function App() {
                     Ma Vision
                   </h3>
                   <p className="mb-6 flex-grow text-slate-600">
-                    Je crois au design qui s'efface pour laisser place au
-                    contenu. Le minimalisme n'est pas une absence de design,
-                    c'est la forme la plus pure de la fonctionnalité.
+                    Ce qui m'anime au quotidien ? L'esthétique des belles
+                    interfaces, mais surtout le bonheur de donner vie à un
+                    projet de A à Z. Qu'il s'agisse de concevoir un design épuré
+                    ou de résoudre des casses-têtes dans le code, je mets un
+                    point d'honneur à créer des solutions sur-mesure pour mes
+                    clients.
                   </p>
                 </BentoCard>
                 <BentoCard className="flex flex-col items-center justify-center text-center">
@@ -1027,5 +1050,162 @@ function App() {
     </div>
   );
 }
+// --- MOTEUR TEXT HOVER EFFECT ACETERNITY ---
+export const TextHoverEffect = ({ text }) => {
+  const svgRef = React.useRef(null);
+  const [cursor, setCursor] = React.useState({ x: 0, y: 0 });
+  const [hovered, setHovered] = React.useState(false);
+  const [maskPosition, setMaskPosition] = React.useState({
+    cx: "50%",
+    cy: "50%",
+  });
 
+  React.useEffect(() => {
+    if (svgRef.current && cursor.x !== null && cursor.y !== null) {
+      const svgRect = svgRef.current.getBoundingClientRect();
+      const cxPercentage = ((cursor.x - svgRect.left) / svgRect.width) * 100;
+      const cyPercentage = ((cursor.y - svgRect.top) / svgRect.height) * 100;
+      setMaskPosition({ cx: `${cxPercentage}%`, cy: `${cyPercentage}%` });
+    }
+  }, [cursor]);
+
+  return (
+    <svg
+      ref={svgRef}
+      width="100%"
+      height="100%"
+      viewBox="0 0 300 100"
+      xmlns="http://www.w3.org/2000/svg"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onMouseMove={(e) => setCursor({ x: e.clientX, y: e.clientY })}
+      className="select-none"
+    >
+      <defs>
+        <linearGradient
+          id="textGradient"
+          gradientUnits="userSpaceOnUse"
+          cx="50%"
+          cy="50%"
+          r="25%"
+        >
+          {hovered && (
+            <radialGradient
+              id="revealMask"
+              gradientUnits="userSpaceOnUse"
+              r="20%"
+              cx={maskPosition.cx}
+              cy={maskPosition.cy}
+            >
+              <stop offset="0%" stopColor="white" />
+              <stop offset="100%" stopColor="black" />
+            </radialGradient>
+          )}
+        </linearGradient>
+      </defs>
+      <text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        strokeWidth="0.5"
+        className="font-[helvetica] font-bold stroke-slate-300 fill-transparent text-7xl"
+        style={{ opacity: hovered ? 0.7 : 0 }}
+      >
+        {text}
+      </text>
+      <motion.text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        strokeWidth="0.5"
+        className="font-[helvetica] font-bold stroke-slate-300 fill-transparent text-7xl"
+        initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
+        animate={{ strokeDashoffset: 0, strokeDasharray: 1000 }}
+        transition={{ duration: 4, ease: "easeInOut" }}
+      >
+        {text}
+      </motion.text>
+      <text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        stroke="none"
+        className="font-[helvetica] font-bold fill-[#0b25e9] text-7xl"
+        mask="url(#textMask)"
+      >
+        {text}
+      </text>
+      {hovered && (
+        <mask id="textMask">
+          <rect
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+            fill="url(#revealMask)"
+          />
+        </mask>
+      )}
+    </svg>
+  );
+};
+// --- COMPOSANT FLIP WORDS (ACETERNITY) ---
+export const FlipWords = ({ words, duration = 2000, className = "" }) => {
+  const [currentWord, setCurrentWord] = useState(words[0]);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const startAnimation = useCallback(() => {
+    const nextWord = words[words.indexOf(currentWord) + 1] || words[0];
+    setCurrentWord(nextWord);
+    setIsAnimating(true);
+  }, [currentWord, words]);
+
+  useEffect(() => {
+    if (!isAnimating) {
+      const timer = setTimeout(() => {
+        startAnimation();
+      }, duration);
+      return () => clearTimeout(timer);
+    }
+  }, [isAnimating, duration, startAnimation]);
+
+  return (
+    <AnimatePresence
+      onExitComplete={() => {
+        setIsAnimating(false);
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 10 }}
+        exit={{
+          opacity: 0,
+          y: -40,
+          x: 40,
+          filter: "blur(8px)",
+          scale: 2,
+          position: "absolute",
+        }}
+        className={`z-10 inline-block relative text-left text-[#0b25e9] ${className}`}
+        key={currentWord}
+      >
+        {currentWord.split("").map((letter, index) => (
+          <motion.span
+            key={currentWord + index}
+            initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ delay: index * 0.08, duration: 0.4 }}
+            className="inline-block"
+          >
+            {letter === " " ? "\u00A0" : letter}
+          </motion.span>
+        ))}
+      </motion.div>
+    </AnimatePresence>
+  );
+};
 export default App;
