@@ -180,7 +180,7 @@ const legalTexts = {
           <br />
           Contact : nathan.procode@gmail.com
         </p>
-        <p>Hébergement : Ce site est hébergé par Vercel Inc.</p>
+        <p>Hébergement : Ce site est hébergé par netlify.com</p>
       </div>
     ),
   },
@@ -855,122 +855,6 @@ function App() {
       )}
 
       {/* --- SECTION TARIFS --- */}
-      <section id="tarifs" className="py-24 relative z-10">
-        {/* C'EST ICI QUE LA MAGIE OPÈRE : On ajoute la boîte qui gère les marges latérales (px-6) */}
-        <div className="container mx-auto px-6">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <SectionTitle>Forfaits & Tarifs</SectionTitle>
-
-            <motion.p
-              variants={itemVariants}
-              className="text-lg text-slate-600 max-w-2xl mb-12 -mt-4"
-            >
-              Je conçois des solutions adaptées à vos objectifs. Choisissez la
-              formule qui correspond à l'étape de votre entreprise.
-            </motion.p>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-              {pricingPlans.map((plan, idx) => (
-                <motion.div
-                  key={idx}
-                  variants={itemVariants}
-                  className={`relative flex flex-col p-6 sm:p-8 rounded-[2rem] border ${
-                    plan.isPopular
-                      ? "bg-slate-900 border-slate-800 text-white shadow-2xl shadow-[#0b25e9]/20 md:scale-105 z-10"
-                      : "bg-white border-slate-200 text-slate-900 shadow-xl"
-                  }`}
-                >
-                  {plan.isPopular && (
-                    <div className="absolute top-0 right-6 sm:right-8 -translate-y-1/2 bg-[#0b25e9] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                      Le plus demandé
-                    </div>
-                  )}
-                  <h3 className="text-2xl font-bold mb-2">{plan.title}</h3>
-                  <div
-                    className={`text-4xl font-extrabold mb-4 ${
-                      plan.isPopular ? "text-white" : "text-[#0b25e9]"
-                    }`}
-                  >
-                    {plan.price}
-                  </div>
-                  <p
-                    className={`mb-8 flex-grow ${
-                      plan.isPopular ? "text-slate-300" : "text-slate-600"
-                    }`}
-                  >
-                    {plan.description}
-                  </p>
-
-                  <ul className="space-y-4 mb-8">
-                    {plan.features.map((feat, fIdx) => (
-                      <li key={fIdx} className="flex items-start">
-                        <span
-                          className={`shrink-0 mr-3 text-xl ${
-                            plan.isPopular
-                              ? "text-[#0b25e9]"
-                              : "text-emerald-500"
-                          }`}
-                        >
-                          ✓
-                        </span>
-                        <span
-                          className={`text-sm ${
-                            plan.isPopular ? "text-slate-200" : "text-slate-700"
-                          }`}
-                        >
-                          {feat}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <a
-                    href="#contact"
-                    className={`w-full py-4 rounded-xl font-bold text-center transition-transform hover:scale-105 ${
-                      plan.isPopular
-                        ? "bg-[#0b25e9] text-white hover:shadow-lg hover:shadow-[#0b25e9]/50"
-                        : "bg-slate-100 text-slate-900 hover:bg-slate-200"
-                    }`}
-                  >
-                    Réserver un appel
-                  </a>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Section d'infos supp. */}
-            <motion.div
-              variants={itemVariants}
-              className="grid grid-cols-1 md:grid-cols-2 gap-8"
-            >
-              <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-lg">
-                <h4 className="text-xl font-bold text-slate-900 mb-4">
-                  Modalités de paiement
-                </h4>
-                <p className="text-slate-600 text-sm leading-relaxed">
-                  Un acompte de 50% est demandé pour valider et démarrer le
-                  projet. Les 50% restants seront facturés le jour de la mise en
-                  ligne.
-                </p>
-              </div>
-              <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-lg">
-                <h4 className="text-xl font-bold text-slate-900 mb-4">
-                  Support & Suivi
-                </h4>
-                <p className="text-slate-600 text-sm leading-relaxed">
-                  Votre réussite m'importe ! Chaque forfait inclut une garantie
-                  de suivi après le lancement pour vous aider.
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
 
       {/* 3. PAGES LÉGALES */}
       {["mentions", "cgu", "cookies"].includes(activePage) && (
