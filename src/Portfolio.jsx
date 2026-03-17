@@ -1,0 +1,1428 @@
+import React, {
+  useRef,
+  useState,
+  createContext,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
+import {
+  Menu,
+  ArrowRight,
+  Palette,
+  Code2,
+  Layers,
+  Linkedin,
+  Instagram,
+  Link as LinkIcon,
+  Mail,
+  MonitorSmartphone,
+  Figma,
+  MousePointerClick,
+  Send,
+  X,
+  PenTool,
+  Megaphone,
+  Sparkles,
+  MapPin,
+  LayoutTemplate,
+  Terminal,
+  Framer,
+  CheckCircle2,
+  LayoutDasboard,
+} from "lucide-react";
+
+// ==========================================
+// 1. BASES DE DONNÉES
+// ==========================================
+
+// Projets Principaux (Modal)
+const projectsData = [
+  {
+    id: 1,
+    title: "Quadraré",
+    category: "UI/UX • Design System • Intégration",
+    image: "/quadrare.jpg",
+    tools: ["Wordpress", "Elementor", "Adobe XD"],
+    description: (
+      <>
+        Création d'un site sur-mesure pour un artisan.{" "}
+        <a
+          href="https://www.quadrare-agencement.fr/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#0b25e9] font-bold hover:underline"
+        >
+          Voir le site web
+        </a>
+      </>
+    ),
+  },
+  {
+    id: 2,
+    title: "Kfz Gutachter",
+    category: "UX Research • Intégration",
+    image: "/kfz.jpg",
+    tools: ["Figma", "Wordpress", "Elementor"],
+    description: (
+      <>
+        Création d'un site pour une entreprise de constat.{" "}
+        <a
+          href="https://kfz-gutachter-nibelungen.de/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#0b25e9] font-bold hover:underline"
+        >
+          Voir le site web
+        </a>
+      </>
+    ),
+  },
+  {
+    id: 3,
+    title: "Jennifer Meyer",
+    category: "UI/UX • Design System • Intégration",
+    image: "/jennifer.jpg",
+    tools: ["Framer", "Wordpress"],
+    description: (
+      <>
+        Création d'un site sur-mesure pour un énergiticienne.{" "}
+        <a
+          href="https://www.jennifermeyer.fr/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#0b25e9] font-bold hover:underline"
+        >
+          Voir le site web
+        </a>
+      </>
+    ),
+  },
+  {
+    id: 4,
+    title: "Batiamo",
+    category: "UI/UX • Design System • Intégration",
+    image: "/Batiamo.jpg",
+    tools: ["Adobe XD", "Elementor", "Wordpress"],
+    description: (
+      <>
+        Création d'un site sur-mesure pour un maitre d'oeuvre en bâtiment.{" "}
+        <a
+          href="https://batiamo.fr/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#0b25e9] font-bold hover:underline"
+        >
+          Voir le site web
+        </a>
+      </>
+    ),
+  },
+];
+
+// Autres réalisations (Animation Marquee / Mur de projets)
+const otherProjects = [
+  {
+    id: 101,
+    title: "Bergerac - Site de la halle",
+    url: "https://www.halle-bergerac.fr/",
+    image: "/bergerac.jpg",
+    color: "bg-emerald-500",
+  },
+  {
+    id: 102,
+    title: "Alliance expo",
+    url: "https://alliance-expo.com/",
+    image: "/alliance.jpg",
+    color: "bg-orange-500",
+  },
+  {
+    id: 103,
+    title: "Le 1896 - Restaurant",
+    url: "https://www.le1896bergerac.fr/",
+    image: "/1886.jpg",
+    color: "bg-blue-400",
+  },
+  {
+    id: 104,
+    title: "Ferme du Burgeaud",
+    url: "https://fermeburgaud.fr/",
+    image: "/burgeaud.jpg",
+    color: "bg-purple-400",
+  },
+  {
+    id: 105,
+    title: "Lhomme et fils TP",
+    url: "https://lhomme-fils.fr/",
+    image: "/hommefils.jpg",
+    color: "bg-slate-500",
+  },
+  {
+    id: 106,
+    title: "STAD Bergerac",
+    url: "https://stad-termite.com/",
+    image: "/stad2.jpg",
+    color: "bg-green-400",
+  },
+  {
+    id: 107,
+    title: "Alliance IG",
+    url: "https://allianceig.fr/",
+    image: "/allianceig.jpg",
+    color: "bg-green-400",
+  },
+  {
+    id: 108,
+    title: "Ter'Ferme",
+    url: "https://www.terferme.fr/",
+    image: "/terferme.jpg",
+    color: "bg-green-400",
+  },
+  {
+    id: 109,
+    title: "Céline Sellerie",
+    url: "https://www.celinesellerie.fr/",
+    image: "/celinesellerie.jpg",
+    color: "bg-green-400",
+  },
+  {
+    id: 110,
+    title: "Château Vignal La Brie",
+    url: "https://www.chateau-vignal-labrie.fr/",
+    image: "/vignal.jpg",
+    color: "bg-green-400",
+  },
+];
+
+// Plans tarifaires (Page Pricing)
+const pricingPlans = [
+  {
+    title: "Landing Page",
+    price: "799 €",
+    description:
+      "Un site d'une page percutant. Idéal pour valider une idée, lancer un produit ou capturer des leads rapidement.",
+    features: [
+      "Atelier de cadrage (1h)",
+      "Design UI/UX sur-mesure",
+      "Intégration et développement",
+      "Optimisation mobile et SEO",
+      "Formulaire de contact",
+      "Livraison sous 2 semaines",
+    ],
+    isPopular: false,
+  },
+  {
+    title: "Site Vitrine Pro",
+    price: "1 500 €",
+    description:
+      "L'outil parfait pour asseoir la crédibilité de votre entreprise avec plusieurs pages et un design mémorable.",
+    features: [
+      "Tout le pack Landing Page",
+      "Jusqu'à 5 pages (Accueil, À propos, Services...)",
+      "Design System complet",
+      "Animations avancées (Scroll, Hover)",
+      "Gestion et mises à jour incluses",
+      "Support post-lancement (30 jours)",
+    ],
+    isPopular: true, // Cette option aura le style sombre mis en avant
+  },
+  {
+    title: "App & Sur-mesure",
+    price: "Sur devis",
+    description:
+      "Pour des besoins complexes, boutiques en ligne, interfaces SaaS ou refonte totale de votre marque.",
+    features: [
+      "Recherche Utilisateur (UX)",
+      "Parcours utilisateurs complexes",
+      "Prototypage interactif",
+      "Design System évolutif",
+      "Tests utilisateurs",
+      "Accompagnement long terme",
+    ],
+    isPopular: false,
+  },
+];
+
+// Textes légaux
+const legalTexts = {
+  mentions: {
+    title: "Mentions Légales",
+    content: (
+      <div className="space-y-6">
+        <p>
+          Éditeur : Nathan Vulpiani, UI/UX Designer.
+          <br />
+          Contact : nathan.procode@gmail.com
+        </p>
+        <p>Hébergement : Ce site est hébergé par netlify.com</p>
+      </div>
+    ),
+  },
+  cgu: {
+    title: "Conditions Générales d'Utilisation",
+    content: (
+      <div className="space-y-6">
+        <p>
+          L'utilisation du site implique l'acceptation pleine et entière des
+          conditions générales d'utilisation ci-après décrites.
+        </p>
+        <p>
+          Toute reproduction, représentation ou modification est interdite sauf
+          autorisation écrite.
+        </p>
+      </div>
+    ),
+  },
+  cookies: {
+    title: "Politique de Cookies",
+    content: (
+      <div className="space-y-6">
+        <p>
+          Un cookie est un fichier qui enregistre des informations relatives à
+          la navigation sur un site.
+        </p>
+        <p>
+          Actuellement, ce site n'utilise que des cookies techniques strictement
+          nécessaires à son bon fonctionnement.
+        </p>
+      </div>
+    ),
+  },
+};
+
+// --- Animations ---
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+  },
+};
+const itemVariants = {
+  hidden: { y: 30, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: "spring", stiffness: 100, damping: 20 },
+  },
+};
+
+const BentoCard = ({ children, className = "", noHover = false }) => {
+  const hoverEffects = noHover
+    ? {}
+    : {
+        scale: 1.02,
+        borderColor: "#0b25e9",
+        boxShadow: "0 20px 40px -10px rgba(11, 37, 233, 0.1)",
+      };
+  return (
+    <motion.div
+      variants={itemVariants}
+      whileHover={hoverEffects}
+      className={`relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xl shadow-slate-200/50 transition-colors duration-300 ${className}`}
+    >
+      <div className="relative z-10 h-full">{children}</div>
+    </motion.div>
+  );
+};
+
+const SectionTitle = ({ children }) => (
+  <motion.h2
+    variants={itemVariants}
+    className="mb-10 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl"
+  >
+    <span className="text-[#0b25e9]">/</span> {children}
+  </motion.h2>
+);
+const favoriteTools = [
+  { id: 1, name: "Figma", designation: "UI/UX & Maquettage", icon: Figma },
+  {
+    id: 2,
+    name: "React JS",
+    designation: "Développement Front-End",
+    icon: Code2,
+  },
+  {
+    id: 3,
+    name: "Framer Motion",
+    designation: "Animations Fluides",
+    icon: MousePointerClick,
+  },
+  { id: 4, name: "Tailwind CSS", designation: "Design System", icon: Layers },
+];
+// ==========================================
+// COMPOSANT PRINCIPAL
+// ==========================================
+function Portfolio() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // <-- Ajoute cette ligne
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [activePage, setActivePage] = useState("home");
+
+  if (selectedProject) document.body.style.overflow = "hidden";
+  else document.body.style.overflow = "unset";
+
+  const navigateTo = (page) => {
+    setActivePage(page);
+    window.scrollTo(0, 0);
+  };
+
+  // Scroll Animations (Home)
+  const targetRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start start", "end start"],
+  });
+  const yGraphic = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const opacityGraphic = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  // Scroll Animations (Marquee / Mur de projets)
+  const showcaseRef = useRef(null);
+  const { scrollYProgress: showcaseScroll } = useScroll({
+    target: showcaseRef,
+    offset: ["start end", "end start"],
+  });
+  const xMoveLeft = useTransform(showcaseScroll, [0, 1], ["0%", "-15%"]);
+  const xMoveRight = useTransform(showcaseScroll, [0, 1], ["-15%", "0%"]);
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-600 selection:bg-[#0b25e9] selection:text-white overflow-x-hidden font-sans relative">
+      <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+          .noise-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 40; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
+        `}</style>
+      <div className="noise-overlay"></div>
+
+      {/* --- FENÊTRE MODALE PROJETS --- */}
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm"
+            onClick={() => setSelectedProject(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-[2rem] shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setSelectedProject(null)}
+                className="absolute top-4 right-4 z-20 p-3 bg-white/80 backdrop-blur-md text-slate-900 rounded-full hover:bg-[#0b25e9] hover:text-white transition-colors shadow-sm"
+              >
+                <X size={20} />
+              </button>
+              <div className="w-full h-64 sm:h-96 bg-slate-100 relative">
+                <div className="absolute inset-0 bg-[#0b25e9]/5 z-10 mix-blend-multiply"></div>
+                <img
+                  src={selectedProject.image}
+                  alt={selectedProject.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-8 sm:p-12">
+                <div className="text-[#0b25e9] font-bold text-sm uppercase tracking-wider mb-3">
+                  {selectedProject.category}
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-6">
+                  {selectedProject.title}
+                </h2>
+                <p className="text-lg text-slate-600 mb-8 leading-relaxed">
+                  {selectedProject.description}
+                </p>
+                <div className="flex flex-wrap gap-3 border-t border-slate-100 pt-8">
+                  <span className="text-sm font-semibold text-slate-900 mr-2 flex items-center">
+                    Outils utilisés :
+                  </span>
+                  {selectedProject.tools.map((tool, idx) => (
+                    <span
+                      key={idx}
+                      className="px-3 py-1 bg-slate-50 border border-slate-200 text-slate-600 rounded-full text-sm font-medium"
+                    >
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* --- HEADER --- */}
+      <header className="fixed top-0 z-40 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
+        <div className="container mx-auto flex h-16 items-center justify-between px-6">
+          <div className="font-bold text-[#0b25e9] text-xl tracking-tighter">
+            NV<span className="text-[#0b25e9]">.</span>
+          </div>
+
+          {/* Menu PC */}
+          <nav className="hidden md:flex space-x-8 text-sm font-semibold text-slate-600">
+            <a href="#about" className="hover:text-[#0b25e9] transition-colors">
+              À propos
+            </a>
+            <a
+              href="#projects"
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              Projets
+            </a>
+            <a
+              href="#tarifs"
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              Tarifs
+            </a>
+            <a
+              href="#contact"
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              Contact
+            </a>
+          </nav>
+
+          {/* Bouton Hamburger pour Mobile */}
+          <button
+            className="md:hidden text-slate-900 p-2"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+
+        {/* Menu Mobile Déroulant */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-slate-200 shadow-xl py-4 px-6 flex flex-col space-y-4 font-semibold text-slate-600">
+            <a
+              href="#about"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              À propos
+            </a>
+            <a
+              href="#projects"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              Projets
+            </a>
+            <a
+              href="#tarifs"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              Tarifs
+            </a>
+            <a
+              href="#contact"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              Contact
+            </a>
+          </div>
+        )}
+      </header>
+
+      {/* --- AFFICHAGE CONDITIONNEL DES PAGES --- */}
+
+      {/* 1. PAGE D'ACCUEIL (PORTFOLIO) */}
+      {activePage === "home" && (
+        <main className="container mx-auto px-6 pt-24 pb-24">
+          <motion.section
+            ref={targetRef}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="relative min-h-[85vh] flex flex-col-reverse lg:flex-row items-center justify-center gap-12 py-20"
+          >
+            <div className="flex-1 space-y-6 lg:text-left z-10">
+              <motion.div
+                variants={itemVariants}
+                className="inline-flex items-center rounded-full border border-[#0b25e9]/20 bg-[#0b25e9]/5 px-3 py-1 text-sm text-[#0b25e9] font-medium"
+              >
+                <span className="mr-2 relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0b25e9] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0b25e9]"></span>
+                </span>
+                Disponible pour de nouveaux projets
+              </motion.div>
+              <motion.h1
+                variants={itemVariants}
+                className="text-5xl font-extrabold tracking-tighter text-slate-900 sm:text-7xl lg:leading-[1.1]"
+              >
+                Créateur{" "}
+                <FlipWords
+                  words={["de sites web", "d'identité visuelle", "de logo"]}
+                />{" "}
+                en Dordogne, <br className="hidden sm:block" />
+                <span className="text-[#0b25e9]">Nathan Vulpiani</span>.
+              </motion.h1>
+              <motion.h2
+                variants={itemVariants}
+                className="text-2xl sm:text-3xl font-medium text-slate-500"
+              >
+                <span className="text-slate-900 font-bold">
+                  UI/UX Designer Freelance,
+                </span>{" "}
+                vous avez besoin d'un site internet ou d'une identité visuelle,
+                mais le monde du digital vous semble compliqué ? Pas de panique.
+                En tant que designer et développeur, je vous accompagne de A à Z
+                pour créer un projet qui vous ressemble, sans jargon technique.
+              </motion.h2>
+              <motion.div
+                variants={itemVariants}
+                className="pt-4 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+              >
+                <a
+                  href="#projects"
+                  className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-slate-900 px-8 py-3 font-bold text-white transition-all hover:bg-[#0b25e9] hover:shadow-lg hover:shadow-[#0b25e9]/30"
+                >
+                  <span className="relative z-10 flex items-center">
+                    Voir mes travaux{" "}
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </a>
+                {/* LE FILIGRANE GÉANT ANIMÉ (Caché sur mobile) */}
+              </motion.div>
+            </div>
+            <div className="flex-1 relative w-full max-w-lg aspect-square lg:aspect-auto lg:h-[600px]">
+              <motion.div
+                style={{ y: yGraphic, opacity: opacityGraphic }}
+                className="w-full h-full rounded-[2rem] overflow-hidden border border-slate-200 shadow-2xl relative"
+              >
+                <motion.div
+                  className="w-full h-full"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                >
+                  <img
+                    src="/nathan-portrait.webp"
+                    alt="Portrait"
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
+              </motion.div>
+              <div className="absolute -inset-4 -z-10 blur-3xl bg-[#0b25e9]/10 rounded-full opacity-60"></div>
+            </div>
+          </motion.section>
+
+          <section id="about" className="py-24 relative z-10">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              <SectionTitle>À propos de moi</SectionTitle>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:grid-rows-[auto_auto]">
+                <BentoCard className="md:col-span-2 flex flex-col justify-center">
+                  <h3 className="text-2xl font-bold mb-4 text-[#0b25e9]">
+                    Qui se cache derrière vos écrans ?
+                  </h3>
+                  <p className="text-lg text-slate-600">
+                    Je suis Nathan Vulpiani. Mon aventure avec le web a commencé
+                    en Dordogne, avec le Sésame Numérique de la WAB à Bergerac,
+                    suivi d'une licence en UI/UX Design en alternance chez
+                    COM'LIBRI. Pour enrichir ma vision du métier, j'ai ensuite
+                    fait mes valises pour Berlin afin de travailler dans une
+                    agence de communication à l'international. De retour chez
+                    moi, près de Belvès, j'ai décidé de me lancer en freelance.
+                  </p>
+                </BentoCard>
+                <BentoCard className="md:row-span-2 flex flex-col">
+                  <div className="h-12 w-12 rounded-full bg-[#0b25e9]/10 flex items-center justify-center mb-6 text-[#0b25e9]">
+                    <Palette size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 mb-4">
+                    Ma Vision
+                  </h3>
+                  <p className="mb-6 flex-grow text-slate-600">
+                    Ce qui m'anime au quotidien ? L'esthétique des belles
+                    interfaces, mais surtout le bonheur de donner vie à un
+                    projet de A à Z. Qu'il s'agisse de concevoir un design épuré
+                    ou de résoudre des casses-têtes dans le code, je mets un
+                    point d'honneur à créer des solutions sur-mesure pour mes
+                    clients.
+                  </p>
+                </BentoCard>
+                <BentoCard className="flex flex-col items-center justify-center text-center">
+                  <div className="text-6xl font-extrabold text-[#0b25e9] leading-none">
+                    25
+                  </div>
+                  <span className="text-sm uppercase tracking-widest font-bold pt-2 text-slate-400">
+                    Ans d'énergie
+                  </span>
+                </BentoCard>
+                <BentoCard className="flex flex-col items-center justify-center text-center">
+                  <div className="p-3 bg-[#0b25e9]/10 text-[#0b25e9] rounded-full mb-3 group-hover:scale-110 transition-transform">
+                    <MapPin size={24} />
+                  </div>
+                  <h4 className="font-bold text-slate-900">Basé en France</h4>
+                  <span className="text-sm text-slate-500 mt-1">
+                    Dispo en Remote
+                  </span>
+                </BentoCard>
+                <BentoCard className="md:col-span-2">
+                  <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center">
+                    <Layers className="mr-2 text-[#0b25e9]" size={20} /> Outils
+                    de prédilection
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    {[
+                      {
+                        name: "Figma",
+                        icon: Figma,
+                        tooltip: "Maquettage & Prototypage UI/UX",
+                      },
+                      {
+                        name: "React & code",
+                        icon: Code2,
+                        tooltip: "Développement Front-End moderne",
+                      },
+                      {
+                        name: "Prototypage",
+                        icon: MousePointerClick,
+                        tooltip: "Création d'expériences interactives",
+                      },
+                      {
+                        name: "Design Systems",
+                        icon: Layers,
+                        tooltip: "Architecture & Cohérence visuelle",
+                      },
+                    ].map((tool, index) => (
+                      <div
+                        key={index}
+                        className="group relative flex items-center space-x-2 rounded-xl bg-slate-50 p-3 border border-slate-100 hover:border-[#0b25e9]/30 hover:bg-[#0b25e9]/5 transition-colors"
+                      >
+                        {/* --- LE TOOLTIP (La bulle cachée) --- */}
+                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 transform translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-out pointer-events-none z-50">
+                          <div className="bg-slate-900 text-white text-xs font-medium py-1.5 px-3 rounded-lg whitespace-nowrap shadow-xl relative">
+                            {tool.tooltip}
+                            {/* La petite pointe de la bulle vers le bas */}
+                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+                          </div>
+                        </div>
+                        <tool.icon size={18} className="text-[#0b25e9]" />
+                        <span className="font-semibold text-slate-700">
+                          {tool.name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </BentoCard>
+                <BentoCard className="md:col-span-3 mt-2">
+                  <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center">
+                    <Sparkles className="mr-2 text-[#0b25e9]" size={20} /> Mes
+                    champs d'expertise
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div className="flex flex-col p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-[#0b25e9]/30 transition-colors group">
+                      <div className="h-12 w-12 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <MonitorSmartphone
+                          className="text-[#0b25e9]"
+                          size={24}
+                        />
+                      </div>
+                      <h4 className="font-bold text-slate-900 mb-2">
+                        UI/UX Design
+                      </h4>
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        Création d'interfaces web et mobiles intuitives,
+                        esthétiques et centrées sur l'utilisateur.
+                      </p>
+                    </div>
+                    <div className="flex flex-col p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-[#0b25e9]/30 transition-colors group">
+                      <div className="h-12 w-12 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <PenTool className="text-[#0b25e9]" size={24} />
+                      </div>
+                      <h4 className="font-bold text-slate-900 mb-2">
+                        Identité Visuelle
+                      </h4>
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        Conception de logos marquants, chartes graphiques
+                        complètes et branding sur-mesure.
+                      </p>
+                    </div>
+                    <div className="flex flex-col p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-[#0b25e9]/30 transition-colors group">
+                      <div className="h-12 w-12 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <Megaphone className="text-[#0b25e9]" size={24} />
+                      </div>
+                      <h4 className="font-bold text-slate-900 mb-2">
+                        Communication Digitale
+                      </h4>
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        Déclinaison de vos supports de communication pour le web
+                        (réseaux) et le print.
+                      </p>
+                    </div>
+                  </div>
+                </BentoCard>
+              </div>
+            </motion.div>
+          </section>
+
+          {/* SECTION PROJETS PRINCIPAUX */}
+          <section id="projects" className="pt-24 pb-12">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              <SectionTitle>Études de cas</SectionTitle>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {projectsData.map((project) => (
+                  <motion.div
+                    key={project.id}
+                    variants={itemVariants}
+                    whileHover={{ y: -5 }}
+                    onClick={() => setSelectedProject(project)}
+                    className="group relative aspect-[4/3] rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-lg cursor-pointer"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent z-10 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 z-20 p-8 flex flex-col justify-end">
+                      <h3 className="text-2xl font-bold text-white mb-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                        {project.title}
+                      </h3>
+                      <p className="text-slate-200 mb-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 delay-75">
+                        {project.category}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </section>
+
+          {/* NOUVEAU MUR DE PROJETS 3D (MARQUEE) */}
+          <section className="py-24 relative z-10 overflow-hidden bg-slate-50">
+            <div className="container mx-auto px-6 mb-12">
+              <h3 className="text-3xl font-bold text-slate-900">
+                <span className="text-[#0b25e9]">/</span> D'autres créations qui
+                marquent les esprits.
+              </h3>
+              <p className="text-slate-500 mt-2 text-lg">
+                Explorez une sélection de mes derniers travaux. Cliquez pour
+                visiter les sites en direct.
+              </p>
+            </div>
+
+            {/* L'INTÉGRATION DU MOTEUR 3D ACETERNITY */}
+            <div className="w-full">
+              <ThreeDMarquee items={otherProjects} />
+            </div>
+          </section>
+          {/* --- SECTION TARIFS --- */}
+          <section id="tarifs" className="py-24 relative z-10">
+            {/* C'EST ICI QUE LA MAGIE OPÈRE : On ajoute la boîte qui gère les marges latérales (px-6) */}
+            <div className="container mx-auto px-6">
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+              >
+                <SectionTitle>Forfaits & Tarifs</SectionTitle>
+
+                <motion.p
+                  variants={itemVariants}
+                  className="text-lg text-slate-600 max-w-2xl mb-12 -mt-4"
+                >
+                  Je conçois des solutions adaptées à vos objectifs. Choisissez
+                  la formule qui correspond à l'étape de votre entreprise.
+                </motion.p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                  {pricingPlans.map((plan, idx) => (
+                    <motion.div
+                      key={idx}
+                      variants={itemVariants}
+                      className={`relative flex flex-col p-6 sm:p-8 rounded-[2rem] border ${
+                        plan.isPopular
+                          ? "bg-slate-900 border-slate-800 text-white shadow-2xl shadow-[#0b25e9]/20 md:scale-105 z-10"
+                          : "bg-white border-slate-200 text-slate-900 shadow-xl"
+                      }`}
+                    >
+                      {plan.isPopular && (
+                        <div className="absolute top-0 right-6 sm:right-8 -translate-y-1/2 bg-[#0b25e9] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                          Le plus demandé
+                        </div>
+                      )}
+                      <h3 className="text-2xl font-bold mb-2">{plan.title}</h3>
+                      <div
+                        className={`text-4xl font-extrabold mb-4 ${
+                          plan.isPopular ? "text-white" : "text-[#0b25e9]"
+                        }`}
+                      >
+                        {plan.price}
+                      </div>
+                      <p
+                        className={`mb-8 flex-grow ${
+                          plan.isPopular ? "text-slate-300" : "text-slate-600"
+                        }`}
+                      >
+                        {plan.description}
+                      </p>
+
+                      <ul className="space-y-4 mb-8">
+                        {plan.features.map((feat, fIdx) => (
+                          <li key={fIdx} className="flex items-start">
+                            <span
+                              className={`shrink-0 mr-3 text-xl ${
+                                plan.isPopular
+                                  ? "text-[#0b25e9]"
+                                  : "text-emerald-500"
+                              }`}
+                            >
+                              ✓
+                            </span>
+                            <span
+                              className={`text-sm ${
+                                plan.isPopular
+                                  ? "text-slate-200"
+                                  : "text-slate-700"
+                              }`}
+                            >
+                              {feat}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <a
+                        href="#contact"
+                        className={`w-full py-4 rounded-xl font-bold text-center transition-transform hover:scale-105 ${
+                          plan.isPopular
+                            ? "bg-[#0b25e9] text-white hover:shadow-lg hover:shadow-[#0b25e9]/50"
+                            : "bg-slate-100 text-slate-900 hover:bg-slate-200"
+                        }`}
+                      >
+                        Réserver un appel
+                      </a>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Section d'infos supp. */}
+                <motion.div
+                  variants={itemVariants}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-8"
+                >
+                  <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-lg">
+                    <h4 className="text-xl font-bold text-slate-900 mb-4">
+                      Modalités de paiement
+                    </h4>
+                    <p className="text-slate-600 text-sm leading-relaxed">
+                      Un acompte de 50% est demandé pour valider et démarrer le
+                      projet. Les 50% restants seront facturés le jour de la
+                      mise en ligne.
+                    </p>
+                  </div>
+                  <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-lg">
+                    <h4 className="text-xl font-bold text-slate-900 mb-4">
+                      Support & Suivi
+                    </h4>
+                    <p className="text-slate-600 text-sm leading-relaxed">
+                      Votre réussite m'importe ! Chaque forfait inclut une
+                      garantie de suivi après le lancement pour vous aider.
+                    </p>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* SECTION CONTACT */}
+          <section id="contact" className="py-24">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              <div className="max-w-4xl mx-auto bg-white rounded-[3rem] p-8 sm:p-16 shadow-2xl border border-slate-100 relative overflow-hidden">
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#0b25e9] rounded-full blur-3xl opacity-10 pointer-events-none"></div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
+                  <div>
+                    <h2 className="text-4xl font-extrabold text-slate-900 mb-4">
+                      Prêt à créer quelque chose{" "}
+                      <span className="text-[#0b25e9]">d'exceptionnel ?</span>
+                    </h2>
+                    <p className="text-lg text-slate-600 mb-8">
+                      Remplissez ce formulaire et je vous répondrai dans les
+                      plus brefs délais.
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      <a
+                        href="https://www.linkedin.com/in/nathan-vulpiani-a3672421b/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-4 rounded-xl bg-slate-50 text-slate-600 hover:bg-[#0b25e9] hover:text-white transition-all border border-slate-100"
+                      >
+                        <Linkedin size={24} />
+                      </a>
+                      <a
+                        href="https://www.instagram.com/vulpiani_nathan/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-4 rounded-xl bg-slate-50 text-slate-600 hover:bg-[#0b25e9] hover:text-white transition-all border border-slate-100"
+                      >
+                        <Instagram size={24} />
+                      </a>
+                      <a
+                        href="mailto:nathan.procode@gmail.com"
+                        className="p-4 rounded-xl bg-slate-50 text-slate-600 hover:bg-[#0b25e9] hover:text-white transition-all border border-slate-100"
+                      >
+                        <Mail size={24} />
+                      </a>
+                      <a
+                        href="https://taap.bio/nathanvulpiani"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-4 rounded-xl bg-slate-50 text-slate-600 hover:bg-[#0b25e9] hover:text-white transition-all border border-slate-100"
+                      >
+                        <LinkIcon size={24} />
+                      </a>
+                    </div>
+                  </div>
+                  <form
+                    action="https://formspree.io/f/mbdapreb"
+                    method="POST"
+                    className="flex flex-col space-y-4"
+                  >
+                    <div>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Nom Prénom"
+                        required
+                        className="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#0b25e9] outline-none transition-all text-slate-900"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="hello@votre-entreprise.com"
+                        required
+                        className="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#0b25e9] outline-none transition-all text-slate-900"
+                      />
+                    </div>
+                    <div>
+                      <textarea
+                        id="message"
+                        name="message"
+                        placeholder="Parlez-moi de votre projet..."
+                        rows="4"
+                        required
+                        className="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#0b25e9] outline-none transition-all text-slate-900 resize-none"
+                      ></textarea>
+                    </div>
+                    <button
+                      type="submit"
+                      className="group w-full p-4 rounded-xl bg-[#0b25e9] text-white font-bold flex items-center justify-center hover:bg-blue-800 transition-colors shadow-lg"
+                    >
+                      Envoyer le message{" "}
+                      <Send
+                        size={18}
+                        className="ml-2 group-hover:translate-x-1 transition-transform"
+                      />
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </motion.div>
+          </section>
+        </main>
+      )}
+
+      {/* 3. PAGES LÉGALES */}
+      {["mentions", "cgu", "cookies"].includes(activePage) && (
+        <main className="container mx-auto px-6 pt-32 pb-24 min-h-screen">
+          <button
+            onClick={() => navigateTo("home")}
+            className="flex items-center text-[#0b25e9] font-bold mb-8 hover:underline group"
+          >
+            <ArrowRight className="mr-2 h-5 w-5 rotate-180 group-hover:-translate-x-1 transition-transform" />{" "}
+            Retour au portfolio
+          </button>
+          <div className="max-w-3xl mx-auto bg-white p-8 sm:p-12 rounded-[2rem] shadow-xl border border-slate-100">
+            <h1 className="text-4xl font-extrabold text-slate-900 mb-8">
+              {legalTexts[activePage]?.title}
+            </h1>
+            <div className="text-slate-600 leading-relaxed">
+              {legalTexts[activePage]?.content}
+            </div>
+          </div>
+        </main>
+      )}
+
+      {/* --- FOOTER UNIVERSEL --- */}
+      <footer className="container mx-auto px-6 pb-8">
+        <div className="mt-8 pt-8 border-t border-slate-200 flex flex-col items-center justify-center space-y-4">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-8 text-sm font-semibold text-slate-500">
+            <button
+              onClick={() => navigateTo("mentions")}
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              Mentions légales
+            </button>
+            <button
+              onClick={() => navigateTo("cgu")}
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              Conditions d'utilisation
+            </button>
+            <button
+              onClick={() => navigateTo("cookies")}
+              className="hover:text-[#0b25e9] transition-colors"
+            >
+              Politique de cookies
+            </button>
+          </div>
+          <div className="text-center text-sm font-medium text-slate-400 mt-4">
+            © {new Date().getFullYear()} Nathan Vulpiani. Conçu et codé avec
+            passion.
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+// --- MOTEUR TEXT HOVER EFFECT ACETERNITY ---
+export const TextHoverEffect = ({ text }) => {
+  const svgRef = React.useRef(null);
+  const [cursor, setCursor] = React.useState({ x: 0, y: 0 });
+  const [hovered, setHovered] = React.useState(false);
+  const [maskPosition, setMaskPosition] = React.useState({
+    cx: "50%",
+    cy: "50%",
+  });
+
+  React.useEffect(() => {
+    if (svgRef.current && cursor.x !== null && cursor.y !== null) {
+      const svgRect = svgRef.current.getBoundingClientRect();
+      const cxPercentage = ((cursor.x - svgRect.left) / svgRect.width) * 100;
+      const cyPercentage = ((cursor.y - svgRect.top) / svgRect.height) * 100;
+      setMaskPosition({ cx: `${cxPercentage}%`, cy: `${cyPercentage}%` });
+    }
+  }, [cursor]);
+
+  return (
+    <svg
+      ref={svgRef}
+      width="100%"
+      height="100%"
+      viewBox="0 0 300 100"
+      xmlns="http://www.w3.org/2000/svg"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onMouseMove={(e) => setCursor({ x: e.clientX, y: e.clientY })}
+      className="select-none"
+    >
+      <defs>
+        <linearGradient
+          id="textGradient"
+          gradientUnits="userSpaceOnUse"
+          cx="50%"
+          cy="50%"
+          r="25%"
+        >
+          {hovered && (
+            <radialGradient
+              id="revealMask"
+              gradientUnits="userSpaceOnUse"
+              r="20%"
+              cx={maskPosition.cx}
+              cy={maskPosition.cy}
+            >
+              <stop offset="0%" stopColor="white" />
+              <stop offset="100%" stopColor="black" />
+            </radialGradient>
+          )}
+        </linearGradient>
+      </defs>
+      <text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        strokeWidth="0.5"
+        className="font-[helvetica] font-bold stroke-slate-300 fill-transparent text-7xl"
+        style={{ opacity: hovered ? 0.7 : 0 }}
+      >
+        {text}
+      </text>
+      <motion.text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        strokeWidth="0.5"
+        className="font-[helvetica] font-bold stroke-slate-300 fill-transparent text-7xl"
+        initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
+        animate={{ strokeDashoffset: 0, strokeDasharray: 1000 }}
+        transition={{ duration: 4, ease: "easeInOut" }}
+      >
+        {text}
+      </motion.text>
+      <text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        stroke="none"
+        className="font-[helvetica] font-bold fill-[#0b25e9] text-7xl"
+        mask="url(#textMask)"
+      >
+        {text}
+      </text>
+      {hovered && (
+        <mask id="textMask">
+          <rect
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+            fill="url(#revealMask)"
+          />
+        </mask>
+      )}
+    </svg>
+  );
+};
+// --- COMPOSANT FLIP WORDS (ACETERNITY) ---
+export const FlipWords = ({ words, duration = 2000, className = "" }) => {
+  const [currentWord, setCurrentWord] = useState(words[0]);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const startAnimation = useCallback(() => {
+    const nextWord = words[words.indexOf(currentWord) + 1] || words[0];
+    setCurrentWord(nextWord);
+    setIsAnimating(true);
+  }, [currentWord, words]);
+
+  useEffect(() => {
+    if (!isAnimating) {
+      const timer = setTimeout(() => {
+        startAnimation();
+      }, duration);
+      return () => clearTimeout(timer);
+    }
+  }, [isAnimating, duration, startAnimation]);
+
+  return (
+    <AnimatePresence
+      onExitComplete={() => {
+        setIsAnimating(false);
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 10 }}
+        exit={{
+          opacity: 0,
+          y: -40,
+          x: 40,
+          filter: "blur(8px)",
+          scale: 2,
+          position: "absolute",
+        }}
+        className={`z-10 inline-block relative text-left text-[#0b25e9] ${className}`}
+        key={currentWord}
+      >
+        {currentWord.split("").map((letter, index) => (
+          <motion.span
+            key={currentWord + index}
+            initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ delay: index * 0.08, duration: 0.4 }}
+            className="inline-block"
+          >
+            {letter === " " ? "\u00A0" : letter}
+          </motion.span>
+        ))}
+      </motion.div>
+    </AnimatePresence>
+  );
+};
+// --- MOTEUR ANIMATED TOOLTIP (ACETERNITY) ---
+export const AnimatedTooltip = ({ items }) => {
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const springConfig = { stiffness: 100, damping: 5 };
+  const x = useMotionValue(0);
+
+  const rotate = useSpring(
+    useTransform(x, [-100, 100], [-45, 45]),
+    springConfig
+  );
+  const translateX = useSpring(
+    useTransform(x, [-100, 100], [-50, 50]),
+    springConfig
+  );
+
+  const handleMouseMove = (event) => {
+    const halfWidth = event.target.offsetWidth / 2;
+    x.set(event.nativeEvent.offsetX - halfWidth);
+  };
+
+  return (
+    <div className="flex flex-row items-center justify-start w-full pl-4 pt-4">
+      {items.map((item) => (
+        <div
+          className="-mr-4 relative group cursor-pointer"
+          key={item.id}
+          onMouseEnter={() => setHoveredIndex(item.id)}
+          onMouseLeave={() => setHoveredIndex(null)}
+          onMouseMove={handleMouseMove}
+        >
+          <AnimatePresence>
+            {hoveredIndex === item.id && (
+              <motion.div
+                initial={{ opacity: 0, y: 20, scale: 0.6 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  transition: { type: "spring", stiffness: 260, damping: 10 },
+                }}
+                exit={{ opacity: 0, y: 20, scale: 0.6 }}
+                style={{
+                  translateX: translateX,
+                  rotate: rotate,
+                  whiteSpace: "nowrap",
+                }}
+                className="absolute -top-16 -left-1/2 translate-x-1/2 flex text-xs flex-col items-center justify-center rounded-xl bg-slate-900 z-50 shadow-xl px-4 py-2"
+              >
+                <div className="font-bold text-white relative z-30 text-base">
+                  {item.name}
+                </div>
+                <div className="text-slate-300 text-xs">{item.designation}</div>
+                {/* La petite flèche en bas de la bulle */}
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Le cercle avec l'icône */}
+          <div className="relative flex items-center justify-center h-14 w-14 rounded-full border-2 border-white bg-slate-50 hover:bg-[#0b25e9]/5 hover:border-[#0b25e9]/30 transition-colors duration-300 group-hover:scale-105 group-hover:z-30 shadow-sm">
+            <item.icon size={24} className="text-[#0b25e9]" />
+            {/* L'astuce SEO : Invisible à l'écran, mais lu par Google ! */}
+            <span className="sr-only">
+              Outil utilisé : {item.name} pour {item.designation}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+// --- MOTEUR 3D MARQUEE (LA VRAIE CORRECTION POUR LES CLICS) ---
+const MarqueeColumn = ({ items, speed, direction, className = "" }) => {
+  return (
+    // On rend les colonnes "fantômes" pour ne pas bloquer la souris
+    <div
+      className={`flex w-64 md:w-72 flex-col gap-6 ${className} pointer-events-none`}
+    >
+      <motion.div
+        animate={{ y: direction === "up" ? ["0%", "-50%"] : ["-50%", "0%"] }}
+        transition={{ repeat: Infinity, ease: "linear", duration: speed }}
+        className="flex flex-col gap-6 pointer-events-none"
+      >
+        {[...items, ...items].map((item, i) => (
+          <a
+            key={i}
+            href={item.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            // LA MAGIE EST ICI : pointer-events-auto rend UNIQUEMENT la carte cliquable !
+            className="group relative h-48 md:h-56 w-full overflow-hidden rounded-3xl border border-slate-200 shadow-xl hover:border-[#0b25e9]/50 transition-all block pointer-events-auto cursor-pointer"
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent z-10 opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+            <div
+              className={`w-full h-full ${item.color} group-hover:scale-110 transition-transform duration-700`}
+            >
+              <img
+                src={item.image}
+                alt={item.title}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.style.display = "none";
+                }}
+              />
+            </div>
+
+            <div className="absolute inset-0 z-20 p-6 flex flex-col justify-end pointer-events-none">
+              <h3 className="text-xl font-bold text-white mb-1 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                {item.title}
+              </h3>
+              <p className="text-sm text-slate-300 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 delay-75 flex items-center">
+                Voir le site <ArrowRight size={14} className="ml-1" />
+              </p>
+            </div>
+          </a>
+        ))}
+      </motion.div>
+    </div>
+  );
+};
+
+export const ThreeDMarquee = ({ items }) => {
+  // 1. On crée des variations de votre liste pour casser la symétrie !
+  const column2Items = [...items].reverse(); // On lit la liste à l'envers
+  const column3Items = [...items.slice(4), ...items.slice(0, 4)]; // On coupe la liste en deux et on inverse les moitiés
+
+  return (
+    <div className="relative flex h-[600px] w-full flex-col items-center justify-center overflow-hidden [perspective:1000px] pointer-events-none">
+      <div
+        className="flex w-full flex-row justify-center gap-6 pointer-events-none"
+        style={{
+          transform: "rotateX(20deg) rotateZ(-20deg) rotateY(20deg)",
+          transformStyle: "preserve-3d",
+        }}
+      >
+        {/* 2. On distribue nos listes mélangées aux 3 colonnes */}
+        <MarqueeColumn items={items} speed={25} direction="up" />
+        <MarqueeColumn
+          items={column2Items}
+          speed={35}
+          direction="down"
+          className="hidden sm:flex"
+        />
+        <MarqueeColumn
+          items={column3Items}
+          speed={30}
+          direction="up"
+          className="hidden lg:flex"
+        />
+      </div>
+
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-slate-50 to-transparent z-30"></div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-50 to-transparent z-30"></div>
+    </div>
+  );
+};
+export default Portfolio;
