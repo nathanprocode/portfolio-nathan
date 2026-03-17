@@ -11,7 +11,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Portfolio />} />
         <Route path="/artisans" element={<LandingArtisans />} />
-        <Route path="/merci" element={<Merci />} />{" "}
+        <Route path="/merci" element={<Merci />} />
         {/* 👈 La nouvelle route est ici */}
       </Routes>
     </Router>

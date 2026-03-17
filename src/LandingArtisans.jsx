@@ -2,6 +2,29 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export default function LandingArtisans() {
+  const navigate = useNavigate(); // Permet à React de changer de page
+
+  // La fonction qui intercepte l'envoi du formulaire
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Empêche la page de se recharger brutalement
+
+    const myForm = event.target;
+    const formData = new FormData(myForm);
+
+    // Envoi "silencieux" à Netlify
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(formData).toString(),
+    })
+      .then(() => {
+        // Si Netlify a bien reçu le message, on affiche ta page Merci !
+        navigate("/merci");
+      })
+      .catch((error) => {
+        alert("Une erreur est survenue lors de l'envoi : " + error);
+      });
+  };
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
       {/* 1. HEADER */}
@@ -134,7 +157,7 @@ export default function LandingArtisans() {
         </div>
       </section>
 
-      {/* 4. SECTION CONTACT (Nouveau Formulaire) */}
+      {/* 4. SECTION CONTACT */}
       <section className="py-16 px-6 mb-10">
         <div className="max-w-3xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-lg border border-gray-100">
           <div className="text-center mb-8">
@@ -146,19 +169,17 @@ export default function LandingArtisans() {
             </p>
           </div>
 
-          {/* Formulaire compatible Netlify */}
+          {/* Formulaire intercepté par React (onSubmit={handleSubmit}) */}
           <form
             name="contact-artisans"
-            method="POST"
-            action="/merci"
             data-netlify="true"
+            onSubmit={handleSubmit}
             className="space-y-6"
           >
-            {/* Champ caché OBLIGATOIRE pour que Netlify avec React fonctionne */}
+            {/* Champ caché vital pour Netlify */}
             <input type="hidden" name="form-name" value="contact-artisans" />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* E-mail */}
               <div>
                 <label
                   htmlFor="email"
@@ -176,7 +197,6 @@ export default function LandingArtisans() {
                 />
               </div>
 
-              {/* Téléphone */}
               <div>
                 <label
                   htmlFor="phone"
@@ -195,7 +215,6 @@ export default function LandingArtisans() {
               </div>
             </div>
 
-            {/* Message */}
             <div>
               <label
                 htmlFor="message"
@@ -212,7 +231,6 @@ export default function LandingArtisans() {
               ></textarea>
             </div>
 
-            {/* Bouton d'envoi */}
             <button
               type="submit"
               className="w-full bg-[#122CE4] text-white font-bold text-lg py-4 rounded-xl shadow-lg hover:opacity-90 transition-opacity"
