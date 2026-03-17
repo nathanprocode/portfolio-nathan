@@ -150,6 +150,7 @@ export default function LandingArtisans() {
           <form
             name="contact-artisans"
             method="POST"
+            action="/merci"
             data-netlify="true"
             className="space-y-6"
           >
