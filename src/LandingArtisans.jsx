@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function LandingArtisans() {
   const navigate = useNavigate(); // Permet à React de changer de page
@@ -25,6 +25,7 @@ export default function LandingArtisans() {
         alert("Une erreur est survenue lors de l'envoi : " + error);
       });
   };
+
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
       {/* 1. HEADER */}
@@ -40,13 +41,13 @@ export default function LandingArtisans() {
         </Link>
       </header>
 
-      {/* 2. SECTION HÉROS (Bleu Électrique) */}
+      {/* 2. SECTION HÉROS */}
       <section className="bg-[#122CE4] text-white py-16 md:py-24 px-6">
         <div className="max-w-5xl mx-auto flex flex-col-reverse md:flex-row items-center gap-12">
           <div className="md:w-3/5 text-center md:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               Création de sites web destinés aux professionnels de
-              Nouvelle-Aquitaine!
+              Nouvelle-Aquitaine !
             </h1>
             <p className="text-xl mb-10 opacity-90 font-light">
               Je m'occupe de la technique de A à Z. Vous vous concentrez sur
